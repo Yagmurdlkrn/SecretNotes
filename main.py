@@ -47,10 +47,40 @@ text3 = Text(width=30,height=2)
 text3.pack()
 
 def button1_clicked():
-    pass
+    title = text1.get("1.0", END)
+    message = text2.get("1.0", END)
+    secret = text3.get("1.0", END)
+
+    if len(title) == 0 or len(message) == 0 or len(secret) == 0:
+        messagebox.showinfo(title="Error!", message="Please enter all information.")
+    else:
+        message_encrypted = encode(secret, message)
+
+        try:
+            with open("mysecret.txt", "a") as data_file:
+                data_file.write(f'\n{title}\n{message_encrypted}')
+        except FileNotFoundError:
+            with open("mysecret.txt", "w") as data_file:
+                data_file.write(f'\n{title}\n{message_encrypted}')
+        finally:
+            text1.delete("1.0", END)
+            text3.delete("1.0", END)
+            text2.delete("1.0", END)
+
 
 def button2_clicked():
-    pass
+    message_encrypted = text2.get("1.0", END)
+    secret = text3.get("1.0", END)
+
+    if len(message_encrypted) == 0 or len(secret) == 0:
+        messagebox.showinfo(title="Error!", message="Please enter all information.")
+    else:
+        try:
+            decrypted_message = decode(secret, message_encrypted)
+            text2.delete("1.0", END)
+            text2.insert("1.0", decrypted_message)
+        except:
+            messagebox.showinfo(title="Error!", message="Please make sure of encrypted info.")
 
 button1 = Button(text="Save & Encrypt",command=button1_clicked)
 button1.pack()
